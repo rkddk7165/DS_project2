@@ -3,6 +3,9 @@
 
 using namespace std;
 
+BpTree::BpTree(){}
+BpTree::~BpTree(){}
+
 bool BpTree::Insert(LoanBookData* newData) {
 
 	return true;

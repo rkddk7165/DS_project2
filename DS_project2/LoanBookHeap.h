@@ -1,0 +1,23 @@
+#pragma once
+#include "LoanBookData.h"
+#include "LoanBookHeapNode.h"
+
+class LoanBookHeap
+{
+private:
+    LoanBookHeapNode* root;
+
+public:
+    LoanBookHeap();
+    ~LoanBookHeap();
+
+    
+
+    void setRoot(LoanBookHeapNode* pN) { this->root = pN; }
+    LoanBookHeapNode* getRoot() { return root; }
+
+    void heapifyUp(LoanBookHeapNode* pN);
+    void heapifyDown(LoanBookHeapNode* pN);
+
+    bool Insert(LoanBookData* data);
+};

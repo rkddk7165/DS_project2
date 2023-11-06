@@ -129,11 +129,21 @@
   <ItemGroup>
     <ClCompile Include="BpTree.cpp" />
     <ClCompile Include="BpTreeNode.h" />
+    <ClCompile Include="LoanBookHeap.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="SelectionTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BpTree.h" />
     <ClInclude Include="BpTreeDataNode.h" />
     <ClInclude Include="BpTreeIndexNode.h" />
+    <ClInclude Include="LoanBookData.h" />
+    <ClInclude Include="LoanBookHeap.h" />
+    <ClInclude Include="LoanBookHeapNode.h" />
+    <ClInclude Include="Manager.h" />
+    <ClInclude Include="SelectionTree.h" />
+    <ClInclude Include="SelectionTreeNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

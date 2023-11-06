@@ -6,6 +6,7 @@
 #include "LoanBookData.h"
 
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <string>
 
