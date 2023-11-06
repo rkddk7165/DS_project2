@@ -26,4 +26,5 @@ public:
     bool Delete();
     bool printBookData(int bookCode);
     SelectionTreeNode* findNodeToDelete(int bookCode, SelectionTreeNode* node, SelectionTreeNode* parent);
+    void inorderTraversal(SelectionTreeNode* node);
 };

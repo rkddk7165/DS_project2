@@ -44,19 +44,7 @@ bool SelectionTree::printBookData(int bookCode) {
 
     // Helper 함수를 정의하여 중위 순회로 도서를 검색하고 출력합니다.
     // 중위 순회를 사용하면 도서를 bookCode 순으로 출력할 수 있습니다.
-    void inorderTraversal(SelectionTreeNode * node) {
-        if (node) {
-            inorderTraversal(node->getLeftChild());
-            if (node->getBookData()->getBookCode() == bookCode) {
-                // 해당 bookCode를 가진 도서를 찾았습니다.
-                found = true;
-                // 도서 정보를 출력합니다.
-                *fout << node->getName() << node->getCode << " " << node->getAuthor << " " << node->getYear << " " << node->getLoanCount << endl;
-                // 다른 도서 정보도 출력할 수 있습니다.
-            }
-            inorderTraversal(node->getRightChild());
-        }
-    }
+   
 
     // 중위 순회를 시작합니다.
     inorderTraversal(root);
@@ -68,6 +56,22 @@ bool SelectionTree::printBookData(int bookCode) {
     }
 
     return true; // Printing successful.
+}
+
+void SelectionTree::inorderTraversal(SelectionTreeNode* node, int bookCode) {
+    bool found = false;
+
+    if (node) {
+        inorderTraversal(node->getLeftChild());
+        if (node->getBookData() == bookCode) { ////////////////////////////////////////////////////////////////////////////////////getbookdata는 전부인데 int bookcode와 비교.......
+            // 해당 bookCode를 가진 도서를 찾았습니다.
+            found = true;
+            // 도서 정보를 출력합니다.
+            *fout << node->getBookData() << endl;
+            // 다른 도서 정보도 출력할 수 있습니다.
+        }
+        inorderTraversal(node->getRightChild());
+    }
 }
 
 // 노드를 삭제할 때 필요한 노드 및 부모 노드를 추적하는 함수.
