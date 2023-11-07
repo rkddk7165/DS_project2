@@ -18,6 +18,10 @@ public:
 		mapIndex.insert(map<string, BpTreeNode*>::value_type(name, pN));
 	}
 
+	bool isLeaf() const override {
+		return false; // 데이터 노드는 리프 노드임
+	}
+
 	void deleteMap(string name) {
 		mapIndex.erase(name);
 	}

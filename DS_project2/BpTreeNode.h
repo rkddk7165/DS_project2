@@ -36,6 +36,8 @@ public:
 	virtual void insertIndexMap(string n, BpTreeNode* pN) {}
 	virtual void deleteMap(string n) {}
 
+	virtual bool isLeaf() const = 0;
+
 	virtual map<string, BpTreeNode*>* getIndexMap() { return {}; }
 	virtual map<string, LoanBookData*>* getDataMap() { return {}; }
 
