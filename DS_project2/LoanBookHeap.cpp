@@ -1,4 +1,4 @@
-#include "LoanBookHeap.h"
+#include "LoanBookHeap.h" 
 
 LoanBookHeap::LoanBookHeap() {
     this->root = NULL;
@@ -13,7 +13,7 @@ void LoanBookHeap::heapifyUp(LoanBookHeapNode* pN) {
 		return;
 	}
 	while (pN->getParent() && (*pN->getBookData() < *pN->getParent()->getBookData())) {
-		LoanBookHeapNode* parent = pN->getParent();
+		LoanBookHeapNode* parent = pN->getParent();  
 		LoanBookData* temp = parent->getBookData();
 		parent->setBookData(pN->getBookData());
 		pN->setBookData(temp);

@@ -27,6 +27,7 @@ public:
 	bool		excessDataNode(BpTreeNode* pDataNode);
 	bool		excessIndexNode(BpTreeNode* pIndexNode);
 	void		splitDataNode(BpTreeNode* pDataNode);
+	BpTreeIndexNode* findParent(BpTreeNode* node, const string& key);
 	void		splitIndexNode(BpTreeNode* pIndexNode);
 	BpTreeNode* getRoot() { return root; }
 	BpTreeNode* searchDataNode(string name);
