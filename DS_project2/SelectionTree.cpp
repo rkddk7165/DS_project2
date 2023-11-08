@@ -1,6 +1,18 @@
 #include "SelectionTree.h"
 
 bool SelectionTree::Insert(LoanBookData* newData) {
+    return true;
+}
+
+bool SelectionTree::Delete() {
+    return true;
+}
+
+bool SelectionTree::printBookData(int bookCode) {
+    return true;
+}
+/*
+bool SelectionTree::Insert(LoanBookData* newData) {
     SelectionTreeNode* newNode = new SelectionTreeNode();
     newNode->setBookData(newData);
 
@@ -171,7 +183,7 @@ bool SelectionTree::Delete() {
 
     return true; // Deletion successful.
 }
-
+*/
 
 
 

@@ -1,4 +1,4 @@
-1984	100	George Orwell	1949	0
+1984 100 George 1949 0
 To Kill a Mochingbrid	400	Harper Lee	1960	0
 Educated	300	Tara Westover	2018	0
 The Power of Now	600	Echhart Tolle	1997	0

@@ -16,7 +16,10 @@ private:
     int loan_count;
 
 public:
-    LoanBookData() { this->loan_count = 0; }
+    LoanBookData() {
+        
+        this->loan_count = 0; }
+
     ~LoanBookData() {};
 
     // Overload the less than operator to compare LoanBookData objects.
