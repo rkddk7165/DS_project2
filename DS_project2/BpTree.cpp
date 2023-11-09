@@ -54,7 +54,7 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
     // dataNode의 데이터 맵에서 중간 지점을 가리키는 반복자 mid를 선언하고 초기화합니다.
     auto mid = dataNode->getDataMap()->begin();
 
-    //중간 지점 반복자 mid를 데이터 맵의 중간으로 이동시킵니다. 이것은 데이터 노드를 반으로 나누기 위한 작업.
+    //중간 지점 반복자 mid를 데이터 맵의 중간으로 이동시킵니다. //////////// 데이터 노드를 반으로 나누기 위한 작업
     advance(mid, dataNode->getDataMap()->size() / 2);
 
     // 새로운 데이터 노드에 분할된 데이터 복사 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////수정해야함 order = 3이기 때문에 for문 말고 하나만
@@ -82,6 +82,7 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
         newRoot->insertIndexMap(newDataNode->getDataMap()->begin()->first, newDataNode);
         dataNode->setParent(newRoot);
         newDataNode->setParent(newRoot);
+        newRoot->setMostLeftChild(dataNode);
         root = newRoot;
     } else {
         BpTreeNode* parent = dataNode->getParent();
@@ -99,25 +100,25 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
 
 void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
 
-    // 주어진 노드 pIndexNode를 BpTreeIndexNode로 형변환합니다.
+    // 주어진 노드 pIndexNode를 BpTreeIndexNode로 형변환
     BpTreeIndexNode* indexNode = static_cast<BpTreeIndexNode*>(pIndexNode);
 
-    // 새로운 인덱스 노드를 생성하여 오른쪽 반을 나타냅니다.
+    // 새로운 인덱스 노드를 생성하여 오른쪽 반을 선언
     BpTreeIndexNode* newIndexNode = new BpTreeIndexNode();
 
-    // 인덱스 노드의 중간 위치를 찾아서 mid 반복자를 초기화합니다.
+    // 인덱스 노드의 중간 위치를 찾아서 mid 반복자를 초기화
     auto mid = indexNode->getIndexMap()->begin();
     advance(mid, indexNode->getIndexMap()->size() / 2);
 
-    // 중간 위치 이후의 키와 자식 포인터를 newIndexNode로 이동시킵니다.
+    // 중간 위치 이후의 키와 자식 포인터를 newIndexNode로 이동
     for (auto it = mid; it != indexNode->getIndexMap()->end(); it++) {
         newIndexNode->insertIndexMap(it->first, it->second);
     }
 
-    // 원래 인덱스 노드에서 중간 위치 이후의 키와 자식 포인터를 제거합니다.
+    // 원래 인덱스 노드에서 중간 위치 이후의 키와 자식 포인터를 제거
     indexNode->getIndexMap()->erase(mid, indexNode->getIndexMap()->end());
 
-    // newIndexNode를 원래 인덱스 노드와 연결하고, 부모 노드에 중간 키를 삽입합니다.
+    // newIndexNode를 원래 인덱스 노드와 연결하고, 부모 노드에 중간 키를 삽입
     newIndexNode->setNext(indexNode->getNext());
     newIndexNode->setPrev(indexNode);
     if (indexNode->getNext()) {
@@ -128,7 +129,7 @@ void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
     // 부모 노드를 찾아서 중간 키를 삽입합니다.
     BpTreeNode* parent = indexNode->getParent();
     if (parent == nullptr) {
-        // 부모가 없으면, 새로운 부모 노드를 생성하고 중간 키와 newIndexNode를 삽입합니다.
+        // 부모가 없으면, 새로운 부모 노드를 생성하고 중간 키와 newIndexNode를 삽입
         BpTreeIndexNode* newParent = new BpTreeIndexNode();
         newParent->insertIndexMap(mid->first, indexNode);
         newParent->insertIndexMap(newIndexNode->getIndexMap()->begin()->first, newIndexNode);
@@ -137,7 +138,7 @@ void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
         root = newParent;
     }
     else {
-        // 그렇지 않으면, 중간 키를 부모 노드에 삽입하고, 부모가 과다한지 확인한 후 필요에 따라 부모 노드를 분할합니다.
+        // 그렇지 않으면, 중간 키를 부모 노드에 삽입하고, 부모가 과다한지 확인한 후 필요에 따라 부모 노드를 분할
         parent->insertIndexMap(mid->first, newIndexNode);
         if (excessIndexNode(parent)) {
             splitIndexNode(parent);
@@ -163,8 +164,13 @@ BpTreeNode* BpTree::searchDataNode(string name) {
             it++;
         }
 
+        //만약 맨 마지막 인덱스보다 클 시
+        if (it == pNode->getIndexMap()->end())
+            pCur = (--it)->second;
+
         // 찾은 인덱스 노드의 자식으로 이동
-        pCur = it->second;
+        else
+            pCur = (--it)->second;
     }
 
     // 데이터 노드에 도달하면 반환

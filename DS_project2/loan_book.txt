@@ -1,4 +1,10 @@
-1984 100 George 1949 0
+1984	100	George	1949	0
 To Kill a Mochingbrid	400	Harper Lee	1960	0
 Educated	300	Tara Westover	2018	0
 The Power of Now	600	Echhart Tolle	1997	0
+AAA	200	Amy	2000	0
+BBB	300	Brian	1999	1
+CCC	200	Chris	1998	2
+DDD	100	Denis	1997	0
+EEE	200	Emily	1996	2
+FFF	100	Fuck	1995	0

@@ -7,11 +7,15 @@ class Manager
 private:
 	char* cmd;
 	BpTree* bptree;
+	ifstream fin;
+	ofstream flog;
 
 	//BpTree* bptree;
 public:
 	Manager(int bpOrder)	//constructor
 	{
+		bptree = new BpTree(&flog, bpOrder);
+
 		/* You must fill here */
 	}
 
@@ -21,8 +25,7 @@ public:
 		/* You must fill here */
 	}
 
-	ifstream fin;
-	ofstream flog;
+	
 
 
 	void run(const char* command);

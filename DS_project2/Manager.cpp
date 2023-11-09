@@ -22,7 +22,7 @@ void Manager::run(const char* command)
 
         if (cmd == "LOAD") {
             if (LOAD()) {
-                flog << "success" << endl;
+                printSuccessCode();
             }
             else {
                 flog << "failed" << endl;
@@ -51,24 +51,30 @@ bool Manager::LOAD()
     string line;
     while (getline(inputFile, line)) {
         istringstream iss(line);
+        string tmp;
         
+        
+
         string name, author;
-        int code, year, loan_count;
+        string code, year, loan_count;
 
-        iss >> name >> code >> author >> year >> loan_count;
-
+        getline(iss, name, '\t');
+        getline(iss, code, '\t');
+        getline(iss, author, '\t');
+        getline(iss, year, '\t');
+        getline(iss, loan_count, '\t');
         //if (iss >> name >> code >> author >> year >> loan_count) {
 
             LoanBookData* newBook = new LoanBookData;
-            newBook->setBookData(name, code, author, year);
+            newBook->setBookData(name, stoi(code), author, stoi(year));
             
-            bptree->Insert(newBook);
             
 
             if (!bptree->Insert(newBook)) {
                 printErrorCode(100);
                 return false;
             }
+            
 
 
 
