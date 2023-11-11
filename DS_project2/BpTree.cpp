@@ -145,16 +145,72 @@ void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
         }
     }
 }
-
-
-
 BpTreeNode* BpTree::searchDataNode(string name) {
     BpTreeNode* pCur = root;
 
+    BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
+    auto it = pNode->getIndexMap()->begin();
+
+    while (!pNode->isLeaf()) {
+        if (pNode->getIndexMap()->size() == 1) {
+
+            if (name < it->first) {
+                pCur = it->second->getMostLeftChild();
+            }
+            else if (name > it->first) {
+                pCur = it->second;
+            }
+        }
+        else if (pNode->getIndexMap()->size() == 2) {
+
+            if (name < it->first) {
+                pCur = it->second->getMostLeftChild();
+            }
+
+            else if (it->first < name && (++it)->first > name) {
+                pCur = it->second->getMostLeftChild();
+            }
+            else if (it->first > name) {
+                pCur = it->second;
+            }
+        }
+    }
+
+    while (pCur != nullptr) {
+        BpTreeDataNode* pDataNode = dynamic_cast<BpTreeDataNode*>(pCur); // 현재 노드를 데이터 노드로 캐스팅
+        map<string, LoanBookData*>::iterator dataIt = pDataNode->getDataMap()->begin();
+
+        // 데이터 노드에서 해당 도서명을 찾을 때까지 탐색
+        while (dataIt != pDataNode->getDataMap()->end()) {
+            if (name < dataIt->first) {
+                break; // 현재 데이터 노드에서 도서명보다 큰 키를 찾으면 종료
+            }
+            dataIt++;
+        }
+
+        // 삽입할 적절한 위치를 찾은 경우 반환
+        if (dataIt != pDataNode->getDataMap()->end()) {
+            return pCur;
+        }
+
+        // 다음 데이터 노드로 이동
+        pCur = pDataNode->getNext();
+    }
+
+    return nullptr; // 삽입할 적절한 위치를 찾지 못한 경우
+}
+            
+            
+
+/*
+BpTreeNode* BpTree::searchDataNode(string name) {
+    BpTreeNode* pCur = root;
+
+    
     // 루트부터 시작하여 데이터 노드까지 내려가는 탐색 과정
     while (!pCur->isLeaf()) {
         BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
-        map<string, BpTreeNode*>::iterator it = pNode->getIndexMap()->begin();
+        auto it = pNode->getIndexMap()->begin();
 
         // 인덱스 노드에서 해당 도서명을 찾을 때까지 탐색
         while (it != pNode->getIndexMap()->end()) {
@@ -164,19 +220,50 @@ BpTreeNode* BpTree::searchDataNode(string name) {
             it++;
         }
 
-        //만약 맨 마지막 인덱스보다 클 시
-        if (it == pNode->getIndexMap()->end())
-            pCur = (--it)->second;
+        // 인덱스 노드에서 해당 도서명을 찾지 못한 경우
+        if (it == pNode->getIndexMap()->end()) {
+            // 맨 마지막 인덱스의 자식으로 이동
+            it--;
+            pCur = it->second;
+        }
+        else {
+            // 찾은 인덱스 노드의 자식으로 이동
+            pCur = it->second;
+        }
 
-        // 찾은 인덱스 노드의 자식으로 이동
-        else
-            pCur = (--it)->second;
+        while (!pCur->isLeaf()) {
+            BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
+            map<string, BpTreeNode*>::iterator it = pNode->getIndexMap()->begin();
+            pCur = it->second; // 제일 왼쪽 자식으로 이동
+        }
+
+        // 데이터 노드에 도달
+        while (pCur != nullptr) {
+            BpTreeDataNode* pDataNode = dynamic_cast<BpTreeDataNode*>(pCur); // 현재 노드를 데이터 노드로 캐스팅
+            map<string, LoanBookData*>::iterator dataIt = pDataNode->getDataMap()->begin();
+
+            // 데이터 노드에서 해당 도서명을 찾을 때까지 탐색
+            while (dataIt != pDataNode->getDataMap()->end()) {
+                if (name < dataIt->first) {
+                    break; // 현재 데이터 노드에서 도서명보다 큰 키를 찾으면 종료
+                }
+                dataIt++;
+            }
+
+            // 삽입할 적절한 위치를 찾은 경우 반환
+            if (dataIt != pDataNode->getDataMap()->end()) {
+                return pCur;
+            }
+
+            // 다음 데이터 노드로 이동
+            pCur = pDataNode->getNext();
+        }
+
+        return nullptr; // 삽입할 적절한 위치를 찾지 못한 경우
+    }
     }
 
-    // 데이터 노드에 도달하면 반환
-    return pCur;
-}
-
+    */
 bool BpTree::searchBook(string name) {
     BpTreeNode* pCur = root;
 

@@ -28,7 +28,7 @@ public:
 		mapData.insert(map<string, LoanBookData*>::value_type(name, pN));
 	}
 
-	bool isLeaf() const override {
+	virtual bool isLeaf() const override {
 		return true; // 데이터 노드는 리프 노드임
 	}
 
