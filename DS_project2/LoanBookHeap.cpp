@@ -8,11 +8,7 @@ LoanBookHeap::~LoanBookHeap() {
     // 여기에 더 필요한 메모리 정리 코드 추가
 }
 
-void swapNodes(LoanBookHeapNode* a, LoanBookHeapNode* b) {
-    LoanBookData* tempData = a->getBookData();
-    a->setBookData(b->getBookData());
-    b->setBookData(tempData);
-}
+
 
 void LoanBookHeap::heapifyUp(LoanBookHeapNode* pN) {
     if (!pN) {
@@ -88,7 +84,6 @@ bool LoanBookHeap::Insert(LoanBookData* data) {
 
         newNode->setParent(root);
         heapifyUp(newNode);
-        SelectionTree
         
     }
     return true; // Insertion successful.

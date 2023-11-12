@@ -56,9 +56,45 @@ void SelectionTree::buildSelectionTree() {
 
 bool SelectionTree::Insert(LoanBookData* newData) {
     if (!root) {
-        root = new SelectionTreeNode();
-        root->setBookData(newData);
-        return true;
+        // 루트 노드
+        SelectionTreeNode* root = new SelectionTreeNode;
+
+        // 1번째 레벨
+        root->setLeftChild(new SelectionTreeNode());
+        root->setRightChild(new SelectionTreeNode());
+
+        // 2번째 레벨
+        root->getLeftChild()->setLeftChild(new SelectionTreeNode());
+        root->getLeftChild()->setRightChild(new SelectionTreeNode());
+        root->getRightChild()->setLeftChild(new SelectionTreeNode());
+        root->getRightChild()->setRightChild(new SelectionTreeNode());
+
+        // 3번째 레벨
+
+        SelectionTreeNode* code000Node = new SelectionTreeNode;
+        root->getLeftChild()->getLeftChild()->setLeftChild(code000Node);
+
+
+        SelectionTreeNode* code100Node = new SelectionTreeNode;
+        root->getLeftChild()->getLeftChild()->setRightChild(code100Node);
+
+        SelectionTreeNode* code200Node = new SelectionTreeNode;
+        root->getLeftChild()->getRightChild()->setLeftChild(code200Node);
+
+        SelectionTreeNode* code300Node = new SelectionTreeNode;
+        root->getLeftChild()->getRightChild()->setRightChild(code300Node);
+
+        SelectionTreeNode* code400Node = new SelectionTreeNode;
+        root->getRightChild()->getLeftChild()->setLeftChild(code400Node);
+
+        SelectionTreeNode* code500Node = new SelectionTreeNode;
+        root->getRightChild()->getLeftChild()->setRightChild(code500Node);
+
+        SelectionTreeNode* code600Node = new SelectionTreeNode;
+        root->getRightChild()->getRightChild()->setLeftChild(code600Node);
+
+        SelectionTreeNode* code700Node = new SelectionTreeNode;
+        root->getRightChild()->getRightChild()->setRightChild(code700Node);
     }
 
     // 새로운 데이터를 삽입할 위치를 찾기 위해 중위 순회로 탐색
@@ -98,17 +134,17 @@ bool SelectionTree::Insert(LoanBookData* newData) {
 
         newNode = newNode->getParent();
     }
-    int code = (newData->getCode());
+    int code = (newData->getCode()) / 100;
     int loanCount = newData->getLoanCount();
 
-    // 예시 조건, 실제 로직에 따라 수정하세요.
-    if (loanCount > 2 && (code == 100)) {
-        newNode->setHeap(new LoanBookHeap()); // 코드 100에 해당하는 힙 생성 및 설정
+    if ((loanCount > 2 && code == 100) || (loanCount > 2 && code == 200) || (loanCount > 3 && code == 300) ||
+        (loanCount > 3 && code == 400) || (loanCount > 1 && code == 500) || (loanCount > 1 && code == 600) ||
+        (loanCount > 1 && code == 700)) {
+
+        // 조건에 맞는 경우 Min Heap을 생성하고 연결
+        newNode->setHeap(new LoanBookHeap());
+        newNode->getHeap()->Insert(newData);
     }
-    else if (loanCount > 2 && (code == 200)) {
-        newNode->setHeap(new LoanBookHeap()); // 코드 200에 해당하는 힙 생성 및 설정
-    }
-    // 필요에 따라 추가적인 조건을 설정하세요.
 
     return true;
 }

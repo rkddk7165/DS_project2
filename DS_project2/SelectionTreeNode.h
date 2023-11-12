@@ -1,7 +1,6 @@
 #pragma once
 #include "LoanBookData.h"
 #include "LoanBookHeap.h"
-#include "BpTree.h"
 
 class SelectionTreeNode
 {
@@ -10,14 +9,11 @@ private:
     SelectionTreeNode* pLeft;
     SelectionTreeNode* pRight;
     SelectionTreeNode* pParent;
+
     LoanBookHeap* hRoot;
-    LoanBookHeap* classificationHeaps[100];
 
 public:
     SelectionTreeNode() {
-
-        
-
         this->pData = NULL;
         this->pLeft = NULL;
         this->pRight = NULL;
@@ -39,10 +35,10 @@ public:
         if (root == NULL) return nullptr;
 
         LoanBookHeapNode* copy = new LoanBookHeapNode();
-        //copy->getLeftChild() = deepCopy(root->getLeftChild());
-          //  copy->getRightChild() = deepCopy(root->getLeftChild());
+        // copy->getLeftChild() = deepCopy(root->getLeftChild())
+          //   copy->getRightChild() = deepCopy(root->getRightChild())
 
-            return copy;
+        return copy;
     }
 
     LoanBookData* getBookData() { return pData; }
@@ -50,6 +46,4 @@ public:
     SelectionTreeNode* getRightChild() { return pRight; }
     SelectionTreeNode* getParent() { return pParent; }
     LoanBookHeap* getHeap() { return hRoot; }
-
-    
 };

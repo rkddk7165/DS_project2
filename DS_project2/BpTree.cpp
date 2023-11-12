@@ -1,6 +1,4 @@
 #include "BpTree.h"
-#include "LoanBookHeap.h"
-#include "SelectionTreeNode.h"
 #include <string>
 
 using namespace std;
@@ -26,8 +24,11 @@ bool BpTree::Insert(LoanBookData* newData) {
             it->second->updateCount();
 
 
-            int code = (it->second->getCode()) / 100;
+            int code = (it->second->getCode());
             int loanCount = it->second->getLoanCount();
+
+            
+            /*
             if (it->second->getLoanCount() > 2 && (it->second->getCode() == 000)) {
 
                 
@@ -67,7 +68,7 @@ bool BpTree::Insert(LoanBookData* newData) {
                 LoanBookHeap* code700Heap = new LoanBookHeap;
                 code700Heap->Insert(newData);
             }
-            
+            */
 
         }
         else {
