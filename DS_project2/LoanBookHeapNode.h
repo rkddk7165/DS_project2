@@ -1,5 +1,7 @@
 #pragma once
 #include "LoanBookData.h"
+#include "BpTree.h"
+#include "SelectionTree.h"
 
 class LoanBookHeapNode
 {

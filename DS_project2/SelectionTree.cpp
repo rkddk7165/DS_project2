@@ -1,8 +1,5 @@
 #include "SelectionTree.h"
 
-bool SelectionTree::Insert(LoanBookData* newData) {
-    return true;
-}
 
 bool SelectionTree::Delete() {
     return true;
@@ -11,42 +8,118 @@ bool SelectionTree::Delete() {
 bool SelectionTree::printBookData(int bookCode) {
     return true;
 }
-/*
+
+
+
+void SelectionTree::buildSelectionTree() {
+    // 루트 노드
+    SelectionTreeNode* root = new SelectionTreeNode;
+
+    // 1번째 레벨
+    root->setLeftChild(new SelectionTreeNode());
+    root->setRightChild(new SelectionTreeNode());
+
+    // 2번째 레벨
+    root->getLeftChild()->setLeftChild(new SelectionTreeNode());
+    root->getLeftChild()->setRightChild(new SelectionTreeNode());
+    root->getRightChild()->setLeftChild(new SelectionTreeNode());
+    root->getRightChild()->setRightChild(new SelectionTreeNode());
+
+    // 3번째 레벨
+    
+    SelectionTreeNode* code000Node = new SelectionTreeNode;
+    root->getLeftChild()->getLeftChild()->setLeftChild(code000Node);
+    
+
+    SelectionTreeNode* code100Node = new SelectionTreeNode;
+    root->getLeftChild()->getLeftChild()->setRightChild(code100Node);
+
+    SelectionTreeNode* code200Node = new SelectionTreeNode;
+    root->getLeftChild()->getRightChild()->setLeftChild(code200Node);
+
+    SelectionTreeNode* code300Node = new SelectionTreeNode;
+    root->getLeftChild()->getRightChild()->setRightChild(code300Node);
+
+    SelectionTreeNode* code400Node = new SelectionTreeNode;
+    root->getRightChild()->getLeftChild()->setLeftChild(code400Node);
+
+    SelectionTreeNode* code500Node = new SelectionTreeNode;
+    root->getRightChild()->getLeftChild()->setRightChild(code500Node);
+
+    SelectionTreeNode* code600Node = new SelectionTreeNode;
+    root->getRightChild()->getRightChild()->setLeftChild(code600Node);
+
+    SelectionTreeNode* code700Node = new SelectionTreeNode;
+    root->getRightChild()->getRightChild()->setRightChild(code700Node);
+
+}
+
 bool SelectionTree::Insert(LoanBookData* newData) {
+    if (!root) {
+        root = new SelectionTreeNode();
+        root->setBookData(newData);
+        return true;
+    }
+
+    // 새로운 데이터를 삽입할 위치를 찾기 위해 중위 순회로 탐색
+    SelectionTreeNode* current = root;
+    SelectionTreeNode* parent = nullptr;
+
+    while (current) {
+        parent = current;
+        if (newData->getName() < current->getBookData()->getName()) {
+            current = current->getLeftChild();
+        }
+        else {
+            current = current->getRightChild();
+        }
+    }
+
+    // 새로운 노드 생성
     SelectionTreeNode* newNode = new SelectionTreeNode();
     newNode->setBookData(newData);
 
-    if (!root) {
-        root = newNode;
+    // 부모와 연결
+    newNode->setParent(parent);
+
+    if (newData->getName() < parent->getBookData()->getName()) {
+        parent->setLeftChild(newNode);
     }
     else {
-        SelectionTreeNode* current = root;
-        SelectionTreeNode* parent = nullptr;
-
-        // Traverse the tree to find the appropriate insertion point based on your criteria.
-        // For example, you can compare book data to determine the insertion point.
-        while (current) {
-            parent = current;
-            if (*newData < *(current->getBookData())) {
-                current = current->getLeftChild();
-            }
-            else {
-                current = current->getRightChild();
-            }
-        }
-
-        // Insert the new node.
-        if (*newData < *(parent->getBookData())) {
-            parent->setLeftChild(newNode);
-        }
-        else {
-            parent->setRightChild(newNode);
-        }
+        parent->setRightChild(newNode);
     }
 
-    return true; // Insertion successful.
+    // Min Winner Tree 조건을 만족하도록 조정
+    while (newNode->getParent() && newNode->getBookData()->getName() < newNode->getParent()->getBookData()->getName()) {
+        // 부모와의 값 비교를 통해 Min Winner Tree를 유지
+        LoanBookData* temp = newNode->getBookData();
+        newNode->setBookData(newNode->getParent()->getBookData());
+        newNode->getParent()->setBookData(temp);
+
+        newNode = newNode->getParent();
+    }
+    int code = (newData->getCode());
+    int loanCount = newData->getLoanCount();
+
+    // 예시 조건, 실제 로직에 따라 수정하세요.
+    if (loanCount > 2 && (code == 100)) {
+        newNode->setHeap(new LoanBookHeap()); // 코드 100에 해당하는 힙 생성 및 설정
+    }
+    else if (loanCount > 2 && (code == 200)) {
+        newNode->setHeap(new LoanBookHeap()); // 코드 200에 해당하는 힙 생성 및 설정
+    }
+    // 필요에 따라 추가적인 조건을 설정하세요.
+
+    return true;
 }
 
+
+
+
+
+
+
+/*
 bool SelectionTree::printBookData(int bookCode) {
     if (!root) {
         return false; // The tree is empty.

@@ -1,37 +1,92 @@
 #include "BpTree.h"
+#include "LoanBookHeap.h"
+#include "SelectionTreeNode.h"
 #include <string>
 
 using namespace std;
-/*
-BpTree::BpTree(ofstream* fout, int order = 3) {
-    root = NULL;
-    this->order = order;
-    this->fout = fout;
-}
-BpTree::~BpTree(){}
-*/
+
 bool BpTree::Insert(LoanBookData* newData) {
     if (root == nullptr) {
         // 루트 노드가 없는 경우 새로운 데이터 노드를 만들어 루트로 설정
         root = new BpTreeDataNode;
-
-        //요약하면, 주어진 코드는 root가 가리키는 객체를 BpTreeDataNode로 형 변환하고, 이 객체의 insertDataMap 함수를 호출하여 새로운 데이터를 삽입
         dynamic_cast<BpTreeDataNode*>(root)->insertDataMap(newData->getName(), newData);
     }
     else {
         // 루트 노드가 있는 경우 루트에서 시작하여 데이터 노드를 찾아 삽입
         BpTreeNode* node = searchDataNode(newData->getName());
-        dynamic_cast<BpTreeDataNode*>(node)->insertDataMap(newData->getName(), newData);
+        BpTreeDataNode* dataNode = dynamic_cast<BpTreeDataNode*>(node);
 
-        while (excessDataNode(node)) {
-            // 데이터 노드가 과다할 경우 분할
-            splitDataNode(node);
+        // 데이터 노드에 이미 도서가 존재하는지 확인
+        auto it = dataNode->getDataMap()->find(newData->getName());
+
+        
+
+        if (it != dataNode->getDataMap()->end()) {
+            // 이미 존재하는 경우 대출 권수를 1 증가
+            it->second->updateCount();
+
+
+            int code = (it->second->getCode()) / 100;
+            int loanCount = it->second->getLoanCount();
+            if (it->second->getLoanCount() > 2 && (it->second->getCode() == 000)) {
+
+                
+            }
+            else if (it->second->getLoanCount() > 2 && (it->second->getCode() == 100)) {
+
+                LoanBookHeap* code100Heap = new LoanBookHeap;
+                code100Heap->Insert(newData);
+            }
+            else if (it->second->getLoanCount() > 2 && (it->second->getCode() == 200)) {
+
+                LoanBookHeap* code200Heap = new LoanBookHeap;
+                code200Heap->Insert(newData);
+            }
+            else if (it->second->getLoanCount() > 3 && (it->second->getCode() == 300)) {
+
+                LoanBookHeap* code300Heap = new LoanBookHeap;
+                code300Heap->Insert(newData);
+            }
+            else if (it->second->getLoanCount() > 3 && (it->second->getCode() == 400)) {
+
+                LoanBookHeap* code400Heap = new LoanBookHeap;
+                code400Heap->Insert(newData);
+            }
+            else if (it->second->getLoanCount() > 1 && (it->second->getCode() == 500)) {
+
+                LoanBookHeap* code500Heap = new LoanBookHeap;
+                code500Heap->Insert(newData);
+            }
+            else if (it->second->getLoanCount() > 1 && (it->second->getCode() == 600)) {
+
+                LoanBookHeap* code600Heap = new LoanBookHeap;
+                code600Heap->Insert(newData);
+            }
+            else if (it->second->getLoanCount() > 1 && (it->second->getCode() == 700)) {
+
+                LoanBookHeap* code700Heap = new LoanBookHeap;
+                code700Heap->Insert(newData);
+            }
+            
+
         }
-       
+        else {
+            // 존재하지 않는 경우 데이터 노드에 삽입
+            dataNode->insertDataMap(newData->getName(), newData);
+            
+
+            while (excessDataNode(node)) {
+                // 데이터 노드가 과다할 경우 분할
+                splitDataNode(node);
+            }
+        }
     }
 
     return true; // 삽입 성공
 }
+
+
+
 
 bool BpTree::excessDataNode(BpTreeNode* pDataNode) {
 	if (pDataNode->getDataMap()->size() > order - 1) return true;//order is equal to the number of elements 
@@ -78,7 +133,7 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
     if (dataNode->getParent() == nullptr) {
         // 루트 노드인 경우 새로운 인덱스 노드를 생성하여 루트를 업데이트
         BpTreeIndexNode* newRoot = new BpTreeIndexNode();
-        newRoot->insertIndexMap(newDataNode->getDataMap()->begin()->first, dataNode);
+        //newRoot->insertIndexMap(newDataNode->getDataMap()->begin()->first, dataNode);
         newRoot->insertIndexMap(newDataNode->getDataMap()->begin()->first, newDataNode);
         dataNode->setParent(newRoot);
         newDataNode->setParent(newRoot);
@@ -99,7 +154,6 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
 
 
 void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
-
     // 주어진 노드 pIndexNode를 BpTreeIndexNode로 형변환
     BpTreeIndexNode* indexNode = static_cast<BpTreeIndexNode*>(pIndexNode);
 
@@ -108,54 +162,60 @@ void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
 
     // 인덱스 노드의 중간 위치를 찾아서 mid 반복자를 초기화
     auto mid = indexNode->getIndexMap()->begin();
-    advance(mid, indexNode->getIndexMap()->size() / 2);
+    mid++;
 
-    // 중간 위치 이후의 키와 자식 포인터를 newIndexNode로 이동
-    for (auto it = mid; it != indexNode->getIndexMap()->end(); it++) {
-        newIndexNode->insertIndexMap(it->first, it->second);
-    }
+    string midName = mid->first;
+
+    auto it = mid;
+    it++;
+
+    newIndexNode->insertIndexMap(it->first, it->second);
+  
+
+    
+    newIndexNode->setMostLeftChild(mid->second);
 
     // 원래 인덱스 노드에서 중간 위치 이후의 키와 자식 포인터를 제거
     indexNode->getIndexMap()->erase(mid, indexNode->getIndexMap()->end());
 
-    // newIndexNode를 원래 인덱스 노드와 연결하고, 부모 노드에 중간 키를 삽입
-    newIndexNode->setNext(indexNode->getNext());
-    newIndexNode->setPrev(indexNode);
-    if (indexNode->getNext()) {
-        indexNode->getNext()->setPrev(newIndexNode);
-    }
-    indexNode->setNext(newIndexNode);
 
-    // 부모 노드를 찾아서 중간 키를 삽입합니다.
-    BpTreeNode* parent = indexNode->getParent();
-    if (parent == nullptr) {
-        // 부모가 없으면, 새로운 부모 노드를 생성하고 중간 키와 newIndexNode를 삽입
-        BpTreeIndexNode* newParent = new BpTreeIndexNode();
-        newParent->insertIndexMap(mid->first, indexNode);
-        newParent->insertIndexMap(newIndexNode->getIndexMap()->begin()->first, newIndexNode);
-        indexNode->setParent(newParent);
-        newIndexNode->setParent(newParent);
-        root = newParent;
+    // 부모 노드에 새로운 키를 삽입하고 인덱스를 연결
+    if (indexNode->getParent() == nullptr) {
+        // 루트 노드인 경우 새로운 인덱스 노드를 생성하여 루트를 업데이트
+        BpTreeIndexNode* newRoot = new BpTreeIndexNode();
+        newRoot->insertIndexMap(midName, newIndexNode);
+        indexNode->setParent(newRoot);
+        newIndexNode->setParent(newRoot);
+        newRoot->setMostLeftChild(indexNode);
+        
+       
+        root = newRoot;
     }
     else {
-        // 그렇지 않으면, 중간 키를 부모 노드에 삽입하고, 부모가 과다한지 확인한 후 필요에 따라 부모 노드를 분할
+        BpTreeNode* parent = indexNode->getParent();
+
+        // 부모 노드에 새로운 키를 삽입합니다.
         parent->insertIndexMap(mid->first, newIndexNode);
+
+        // 새로운 키를 삽입한 후, 부모 노드가 과다하다면 부모 노드를 분할
         if (excessIndexNode(parent)) {
             splitIndexNode(parent);
         }
     }
 }
+
 BpTreeNode* BpTree::searchDataNode(string name) {
     BpTreeNode* pCur = root;
 
-    BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
-    auto it = pNode->getIndexMap()->begin();
+    
 
-    while (!pNode->isLeaf()) {
+    while (!pCur->isLeaf()) {
+        BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
+        auto it = pNode->getIndexMap()->begin();
         if (pNode->getIndexMap()->size() == 1) {
 
             if (name < it->first) {
-                pCur = it->second->getMostLeftChild();
+                pCur = pNode->getMostLeftChild(); // it->second->getMostLeftChild();
             }
             else if (name > it->first) {
                 pCur = it->second;
@@ -164,110 +224,198 @@ BpTreeNode* BpTree::searchDataNode(string name) {
         else if (pNode->getIndexMap()->size() == 2) {
 
             if (name < it->first) {
-                pCur = it->second->getMostLeftChild();
+                pCur = pNode->getMostLeftChild(); //it->second->getMostLeftChild();
             }
 
             else if (it->first < name && (++it)->first > name) {
-                pCur = it->second->getMostLeftChild();
+                pCur = (--it)->second;//it->second->getMostLeftChild();
             }
-            else if (it->first > name) {
+            else if ((++it)->first < name) {
+                pCur = it->second;
+            }
+        }
+    }
+    return pCur;
+}
+    
+
+bool BpTree::searchBook(string name) {
+    BpTreeNode* pCur = root;
+
+    // 루트부터 시작하여 데이터 노드까지 내려가는 탐색 과정
+    while (!pCur->isLeaf()) {
+        BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
+        auto it = pNode->getIndexMap()->begin();
+        if (pNode->getIndexMap()->size() == 1) {
+
+            if (name < it->first) {
+                pCur = pNode->getMostLeftChild(); // it->second->getMostLeftChild();
+            }
+            else if (name > it->first) {
+                pCur = it->second;
+            }
+        }
+        else if (pNode->getIndexMap()->size() == 2) {
+
+            if (name < it->first) {
+                pCur = pNode->getMostLeftChild(); //it->second->getMostLeftChild();
+            }
+
+            else if (it->first < name && (++it)->first > name) {
+                pCur = (--it)->second;//it->second->getMostLeftChild();
+            }
+            else if ((++it)->first < name) {
                 pCur = it->second;
             }
         }
     }
 
+    // 데이터 노드에 도달
     while (pCur != nullptr) {
         BpTreeDataNode* pDataNode = dynamic_cast<BpTreeDataNode*>(pCur); // 현재 노드를 데이터 노드로 캐스팅
-        map<string, LoanBookData*>::iterator dataIt = pDataNode->getDataMap()->begin();
+        auto dataIt = pDataNode->getDataMap()->begin();
 
         // 데이터 노드에서 해당 도서명을 찾을 때까지 탐색
         while (dataIt != pDataNode->getDataMap()->end()) {
-            if (name < dataIt->first) {
-                break; // 현재 데이터 노드에서 도서명보다 큰 키를 찾으면 종료
+            if (name == dataIt->first) {
+                // 해당 도서를 찾으면 정보를 출력
+                *fout << "Book Found: " << dataIt->second->getName() << "/" << dataIt->second->getCode()
+                    << "/" << dataIt->second->getAuthor() << "/" << dataIt->second->getYear() << "/"
+                    << dataIt->second->getLoanCount() << endl;
+                return true;
             }
             dataIt++;
-        }
-
-        // 삽입할 적절한 위치를 찾은 경우 반환
-        if (dataIt != pDataNode->getDataMap()->end()) {
-            return pCur;
         }
 
         // 다음 데이터 노드로 이동
         pCur = pDataNode->getNext();
     }
 
-    return nullptr; // 삽입할 적절한 위치를 찾지 못한 경우
+    // 책을 찾지 못한 경우
+    cout << "Book not found." << endl;
+    return false;
 }
-            
-            
+
+
+bool BpTree::searchRange(string start, string end) {
+    return true;
+}
+
+bool BpTree::printBook() {
+    BpTreeNode* pCur = root;
+
+    while (!pCur->isLeaf()) {
+        pCur = pCur->getMostLeftChild();
+    }
+    while (pCur != nullptr) {
+        BpTreeDataNode* dataNode = dynamic_cast<BpTreeDataNode*>(pCur); // 현재 노드를 데이터 노드로 캐스팅
+        for (const auto& entry : *(dataNode->getDataMap())) {
+            *fout << entry.second->getName() << "/" << entry.second->getCode() << "/"
+                << entry.second->getAuthor() << "/" << entry.second->getYear() << "/"
+                << entry.second->getLoanCount() << endl;
+        }
+
+        // 다음 데이터 노드로 이동
+        pCur = dataNode->getNext();
+    }
+
+    return true;
+}
+
+
+
+
+
 
 /*
-BpTreeNode* BpTree::searchDataNode(string name) {
-    BpTreeNode* pCur = root;
+while (pCur != nullptr) {
+    BpTreeDataNode* pDataNode = dynamic_cast<BpTreeDataNode*>(pCur); // 현재 노드를 데이터 노드로 캐스팅
+    map<string, LoanBookData*>::iterator dataIt = pDataNode->getDataMap()->begin();
 
-    
-    // 루트부터 시작하여 데이터 노드까지 내려가는 탐색 과정
-    while (!pCur->isLeaf()) {
-        BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
-        auto it = pNode->getIndexMap()->begin();
-
-        // 인덱스 노드에서 해당 도서명을 찾을 때까지 탐색
-        while (it != pNode->getIndexMap()->end()) {
-            if (name < it->first) {
-                break; // 현재 인덱스 노드에서 도서명보다 큰 키를 찾으면 종료
-            }
-            it++;
+    // 데이터 노드에서 해당 도서명을 찾을 때까지 탐색
+    while (dataIt != pDataNode->getDataMap()->end()) {
+        if (name < dataIt->first) {
+            break; // 현재 데이터 노드에서 도서명보다 큰 키를 찾으면 종료
         }
-
-        // 인덱스 노드에서 해당 도서명을 찾지 못한 경우
-        if (it == pNode->getIndexMap()->end()) {
-            // 맨 마지막 인덱스의 자식으로 이동
-            it--;
-            pCur = it->second;
-        }
-        else {
-            // 찾은 인덱스 노드의 자식으로 이동
-            pCur = it->second;
-        }
-
-        while (!pCur->isLeaf()) {
-            BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
-            map<string, BpTreeNode*>::iterator it = pNode->getIndexMap()->begin();
-            pCur = it->second; // 제일 왼쪽 자식으로 이동
-        }
-
-        // 데이터 노드에 도달
-        while (pCur != nullptr) {
-            BpTreeDataNode* pDataNode = dynamic_cast<BpTreeDataNode*>(pCur); // 현재 노드를 데이터 노드로 캐스팅
-            map<string, LoanBookData*>::iterator dataIt = pDataNode->getDataMap()->begin();
-
-            // 데이터 노드에서 해당 도서명을 찾을 때까지 탐색
-            while (dataIt != pDataNode->getDataMap()->end()) {
-                if (name < dataIt->first) {
-                    break; // 현재 데이터 노드에서 도서명보다 큰 키를 찾으면 종료
-                }
-                dataIt++;
-            }
-
-            // 삽입할 적절한 위치를 찾은 경우 반환
-            if (dataIt != pDataNode->getDataMap()->end()) {
-                return pCur;
-            }
-
-            // 다음 데이터 노드로 이동
-            pCur = pDataNode->getNext();
-        }
-
-        return nullptr; // 삽입할 적절한 위치를 찾지 못한 경우
-    }
+        dataIt++;
     }
 
-    */
-bool BpTree::searchBook(string name) {
-    BpTreeNode* pCur = root;
+    // 삽입할 적절한 위치를 찾은 경우 반환
+    if (dataIt != pDataNode->getDataMap()->end()) {
+        return pCur;
+    }
 
-    while (pCur) {
+    // 다음 데이터 노드로 이동
+    pCur = pDataNode->getNext();
+}
+
+return nullptr; // 삽입할 적절한 위치를 찾지 못한 경우
+}
+      */
+
+
+      /*
+      BpTreeNode* BpTree::searchDataNode(string name) {
+          BpTreeNode* pCur = root;
+
+
+          // 루트부터 시작하여 데이터 노드까지 내려가는 탐색 과정
+          while (!pCur->isLeaf()) {
+              BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
+              auto it = pNode->getIndexMap()->begin();
+
+              // 인덱스 노드에서 해당 도서명을 찾을 때까지 탐색
+              while (it != pNode->getIndexMap()->end()) {
+                  if (name < it->first) {
+                      break; // 현재 인덱스 노드에서 도서명보다 큰 키를 찾으면 종료
+                  }
+                  it++;
+              }
+
+              // 인덱스 노드에서 해당 도서명을 찾지 못한 경우
+              if (it == pNode->getIndexMap()->end()) {
+                  // 맨 마지막 인덱스의 자식으로 이동
+                  it--;
+                  pCur = it->second;
+              }
+              else {
+                  // 찾은 인덱스 노드의 자식으로 이동
+                  pCur = it->second;
+              }
+
+              while (!pCur->isLeaf()) {
+                  BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pCur); // 현재 노드를 인덱스 노드로 캐스팅
+                  map<string, BpTreeNode*>::iterator it = pNode->getIndexMap()->begin();
+                  pCur = it->second; // 제일 왼쪽 자식으로 이동
+              }
+
+              // 데이터 노드에 도달
+              while (pCur != nullptr) {
+                  BpTreeDataNode* pDataNode = dynamic_cast<BpTreeDataNode*>(pCur); // 현재 노드를 데이터 노드로 캐스팅
+                  map<string, LoanBookData*>::iterator dataIt = pDataNode->getDataMap()->begin();
+
+                  // 데이터 노드에서 해당 도서명을 찾을 때까지 탐색
+                  while (dataIt != pDataNode->getDataMap()->end()) {
+                      if (name < dataIt->first) {
+                          break; // 현재 데이터 노드에서 도서명보다 큰 키를 찾으면 종료
+                      }
+                      dataIt++;
+                  }
+
+                  // 삽입할 적절한 위치를 찾은 경우 반환
+                  if (dataIt != pDataNode->getDataMap()->end()) {
+                      return pCur;
+                  }
+
+                  // 다음 데이터 노드로 이동
+                  pCur = pDataNode->getNext();
+              }
+
+              return nullptr; // 삽입할 적절한 위치를 찾지 못한 경우
+          }
+          }
+
+          while (pCur) {
         if (pCur->isLeaf()) {
             BpTreeNode* dataNode = static_cast<BpTreeDataNode*> (pCur);
             auto dataMap = dataNode->getDataMap();
@@ -295,7 +443,7 @@ bool BpTree::searchBook(string name) {
         }
 
             if (it == indexMap->begin()) {
-                
+
                 pCur = indexNode;
             }
             else {
@@ -309,8 +457,36 @@ bool BpTree::searchBook(string name) {
     *fout << "ERROR" << endl;
     return false;
 
-}
+          */
 
-bool BpTree::searchRange(string start, string end) {
-    return true;
-}
+
+
+
+          /*
+          bool BpTree::Insert(LoanBookData* newData) {
+              if (root == nullptr) {
+                  // 루트 노드가 없는 경우 새로운 데이터 노드를 만들어 루트로 설정
+                  root = new BpTreeDataNode;
+
+                  //요약하면, 주어진 코드는 root가 가리키는 객체를 BpTreeDataNode로 형 변환하고, 이 객체의 insertDataMap 함수를 호출하여 새로운 데이터를 삽입
+                  dynamic_cast<BpTreeDataNode*>(root)->insertDataMap(newData->getName(), newData);
+              }
+              else {
+                  // 루트 노드가 있는 경우 루트에서 시작하여 데이터 노드를 찾아 삽입
+                  BpTreeNode* node = searchDataNode(newData->getName());
+                  dynamic_cast<BpTreeDataNode*>(node)->insertDataMap(newData->getName(), newData);
+
+
+
+
+
+                  while (excessDataNode(node)) {
+                      // 데이터 노드가 과다할 경우 분할
+                      splitDataNode(node);
+                  }
+
+              }
+
+              return true; // 삽입 성공
+          }
+          */

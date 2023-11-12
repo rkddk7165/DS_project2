@@ -1,5 +1,5 @@
 #pragma once
-
+#include "SelectionTree.h"
 #include "BpTree.h"
 
 class Manager
@@ -7,6 +7,7 @@ class Manager
 private:
 	char* cmd;
 	BpTree* bptree;
+	SelectionTree* stree;
 	ifstream fin;
 	ofstream flog;
 
@@ -15,6 +16,8 @@ public:
 	Manager(int bpOrder)	//constructor
 	{
 		bptree = new BpTree(&flog, bpOrder);
+		stree = new SelectionTree(&flog);
+		
 
 		/* You must fill here */
 	}
@@ -30,7 +33,7 @@ public:
 
 	void run(const char* command);
 	bool LOAD();
-	bool ADD();
+	bool ADD(string addData);
 
 	bool SEARCH_BP_BOOK(string book);
 	bool SEARCH_BP_RANGE(string start, string end);
@@ -41,6 +44,6 @@ public:
 	bool DELETE();
 
 	void printErrorCode(int n);
-	void printSuccessCode();
+	void printSuccessCode(string command);
 
 };

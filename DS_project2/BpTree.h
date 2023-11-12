@@ -15,6 +15,9 @@ private:
 	BpTreeNode* root;
 	int			order;		// m children
 	ofstream* fout;
+
+	
+
 public:
 	BpTree(ofstream* fout, int order = 3) {
 		root = NULL;
@@ -27,13 +30,13 @@ public:
 	bool		excessDataNode(BpTreeNode* pDataNode);
 	bool		excessIndexNode(BpTreeNode* pIndexNode);
 	void		splitDataNode(BpTreeNode* pDataNode);
-	BpTreeIndexNode* findParent(BpTreeNode* node, const string& key);
 	void		splitIndexNode(BpTreeNode* pIndexNode);
 	BpTreeNode* getRoot() { return root; }
 	BpTreeNode* searchDataNode(string name);
 
 	bool searchBook(string name);
 	bool searchRange(string start, string end);
+	bool printBook();
 
 };
 
