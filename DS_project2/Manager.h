@@ -7,7 +7,7 @@ class Manager
 private:
 	char* cmd;
 	BpTree* bptree;
-	SelectionTree* stree;
+	
 	ifstream fin;
 	ofstream flog;
 
@@ -16,7 +16,7 @@ public:
 	Manager(int bpOrder)	//constructor
 	{
 		bptree = new BpTree(&flog, bpOrder);
-		stree = new SelectionTree(&flog);
+		
 		
 
 		/* You must fill here */

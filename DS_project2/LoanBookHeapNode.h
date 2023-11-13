@@ -1,7 +1,5 @@
 #pragma once
 #include "LoanBookData.h"
-#include "BpTree.h"
-#include "SelectionTree.h"
 
 class LoanBookHeapNode
 {
@@ -19,7 +17,7 @@ public:
         this->pParent = NULL;
     }
     ~LoanBookHeapNode() {
-        delete pData;
+
     }
 
     void setBookData(LoanBookData* data) { this->pData = data; }

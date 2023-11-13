@@ -12,7 +12,7 @@ public:
     LoanBookHeap();
     ~LoanBookHeap();
 
-    
+
 
     void setRoot(LoanBookHeapNode* pN) { this->root = pN; }
     LoanBookHeapNode* getRoot() { return root; }

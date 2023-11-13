@@ -5,7 +5,7 @@ LoanBookHeap::LoanBookHeap() {
 }
 
 LoanBookHeap::~LoanBookHeap() {
-    // 여기에 더 필요한 메모리 정리 코드 추가
+    
 }
 
 
@@ -64,7 +64,7 @@ void LoanBookHeap::heapifyDown(LoanBookHeapNode* pN) {
 bool LoanBookHeap::Insert(LoanBookData* data) {
 
     LoanBookHeapNode* newNode = new LoanBookHeapNode();
-    
+
     newNode->setBookData(data);
 
     if (!root) {
@@ -84,7 +84,7 @@ bool LoanBookHeap::Insert(LoanBookData* data) {
 
         newNode->setParent(root);
         heapifyUp(newNode);
-        
+
     }
     return true; // Insertion successful.
 }
@@ -95,28 +95,28 @@ bool LoanBookHeap::Insert(LoanBookData* data) {
 
 
 /*
-#include "LoanBookHeap.h" 
+#include "LoanBookHeap.h"
 
 LoanBookHeap::LoanBookHeap() {
     this->root = NULL;
 }
 
 LoanBookHeap::~LoanBookHeap() {
-	
+
 }
 
 void LoanBookHeap::heapifyUp(LoanBookHeapNode* pN) {
-	if (!pN) {
-		return;
-	}
-	while (pN->getParent() && (*pN->getBookData() < *pN->getParent()->getBookData())) {
-		LoanBookHeapNode* parent = pN->getParent();  
-		LoanBookData* temp = parent->getBookData();
-		parent->setBookData(pN->getBookData());
-		pN->setBookData(temp);
+    if (!pN) {
+        return;
+    }
+    while (pN->getParent() && (*pN->getBookData() < *pN->getParent()->getBookData())) {
+        LoanBookHeapNode* parent = pN->getParent();
+        LoanBookData* temp = parent->getBookData();
+        parent->setBookData(pN->getBookData());
+        pN->setBookData(temp);
 
-		pN = parent;
-	}
+        pN = parent;
+    }
 }
 
 void LoanBookHeap::heapifyDown(LoanBookHeapNode* pN) {

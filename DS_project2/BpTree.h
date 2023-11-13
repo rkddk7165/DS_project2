@@ -37,6 +37,7 @@ public:
 	bool searchBook(string name);
 	bool searchRange(string start, string end);
 	bool printBook();
+	bool Delete(LoanBookData* data);
 
 };
 

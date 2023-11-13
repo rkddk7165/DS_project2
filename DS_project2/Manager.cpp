@@ -40,16 +40,37 @@ void Manager::run(const char* command)
             ADD(addData);
 
         }
+        
 
+        
         else if (cmd.substr(0, 9) == "SEARCH_BP") {
-            string bookName = cmd.substr(10);
+            string args = cmd.substr(10);
+            size_t spaceIndex = args.find(' ');
 
-            bool found = bptree->searchBook(bookName);
+            if (spaceIndex != string::npos) {
+                // SEARCH_BP 인자가 두 개인 경우
+                string start = args.substr(0, spaceIndex);
+                string end = args.substr(spaceIndex + 1);
 
-            if (!found) {
-                flog << "Book not found." << endl;
+                if (SEARCH_BP_RANGE(start, end)) {
+                    printSuccessCode("SEARCH_BP_RANGE");
+                }
+                else {
+                    flog << "SEARCH_BP_RANGE failed" << endl;
+                }
+            }
+            else {
+                // SEARCH_BP 인자가 한 개인 경우
+                string bookName = args;
+
+                bool found = bptree->searchBook(bookName);
+
+                if (!found) {
+                    flog << "Book not found." << endl;
+                }
             }
         }
+        
         else if (cmd == "PRINT_BP") {
             bptree->printBook();
         }
@@ -155,7 +176,18 @@ bool Manager::SEARCH_BP_BOOK(string book)
 
 bool Manager::SEARCH_BP_RANGE(string s, string e)
 {
-    return true;
+    if (bptree) {
+        if (bptree->searchRange(s, e)) {
+            return true;
+        }
+        else {
+            printErrorCode(200);
+        }
+    }
+    else {
+        printErrorCode(200);
+    }
+    return false;
 }
 
 bool Manager::PRINT_BP() {

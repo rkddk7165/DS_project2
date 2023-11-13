@@ -1,4 +1,6 @@
 #include "BpTree.h"
+#include "SelectionTree.h"
+#include "LoanBookHeap.h"
 #include <string>
 
 using namespace std;
@@ -17,74 +19,42 @@ bool BpTree::Insert(LoanBookData* newData) {
         // 데이터 노드에 이미 도서가 존재하는지 확인
         auto it = dataNode->getDataMap()->find(newData->getName());
 
-        
+
 
         if (it != dataNode->getDataMap()->end()) {
             // 이미 존재하는 경우 대출 권수를 1 증가
             it->second->updateCount();
 
-
+            /*
             int code = (it->second->getCode());
             int loanCount = it->second->getLoanCount();
 
-            
-            /*
-            if (it->second->getLoanCount() > 2 && (it->second->getCode() == 000)) {
+            if ((loanCount > 2 && code == 100) || (loanCount > 2 && code == 200) || (loanCount > 3 && code == 300) ||
+                (loanCount > 3 && code == 400) || (loanCount > 1 && code == 500) || (loanCount > 1 && code == 600) ||
+                (loanCount > 1 && code == 700)) {
 
-                
-            }
-            else if (it->second->getLoanCount() > 2 && (it->second->getCode() == 100)) {
+                Delete(newData);
 
-                LoanBookHeap* code100Heap = new LoanBookHeap;
-                code100Heap->Insert(newData);
-            }
-            else if (it->second->getLoanCount() > 2 && (it->second->getCode() == 200)) {
 
-                LoanBookHeap* code200Heap = new LoanBookHeap;
-                code200Heap->Insert(newData);
-            }
-            else if (it->second->getLoanCount() > 3 && (it->second->getCode() == 300)) {
-
-                LoanBookHeap* code300Heap = new LoanBookHeap;
-                code300Heap->Insert(newData);
-            }
-            else if (it->second->getLoanCount() > 3 && (it->second->getCode() == 400)) {
-
-                LoanBookHeap* code400Heap = new LoanBookHeap;
-                code400Heap->Insert(newData);
-            }
-            else if (it->second->getLoanCount() > 1 && (it->second->getCode() == 500)) {
-
-                LoanBookHeap* code500Heap = new LoanBookHeap;
-                code500Heap->Insert(newData);
-            }
-            else if (it->second->getLoanCount() > 1 && (it->second->getCode() == 600)) {
-
-                LoanBookHeap* code600Heap = new LoanBookHeap;
-                code600Heap->Insert(newData);
-            }
-            else if (it->second->getLoanCount() > 1 && (it->second->getCode() == 700)) {
-
-                LoanBookHeap* code700Heap = new LoanBookHeap;
-                code700Heap->Insert(newData);
             }
             */
-
         }
-        else {
-            // 존재하지 않는 경우 데이터 노드에 삽입
-            dataNode->insertDataMap(newData->getName(), newData);
-            
+            else {
+                // 존재하지 않는 경우 데이터 노드에 삽입
+                dataNode->insertDataMap(newData->getName(), newData);
 
-            while (excessDataNode(node)) {
-                // 데이터 노드가 과다할 경우 분할
-                splitDataNode(node);
+
+                while (excessDataNode(node)) {
+                    // 데이터 노드가 과다할 경우 분할
+                    splitDataNode(node);
+                }
             }
         }
+
+        return true; // 삽입 성공
     }
 
-    return true; // 삽입 성공
-}
+
 
 
 
@@ -297,10 +267,143 @@ bool BpTree::searchBook(string name) {
     return false;
 }
 
-
+/*
 bool BpTree::searchRange(string start, string end) {
+    BpTreeNode* pStart = root;
+
+    // start 문자열에 해당하는 데이터노드 탐색
+    while (!pStart->isLeaf()) {
+        BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pStart); // 현재 노드를 인덱스 노드로 캐스팅
+        auto it = pNode->getIndexMap()->begin();
+        if (pNode->getIndexMap()->size() == 1) {
+
+            if (start < it->first) {
+                pStart = pNode->getMostLeftChild(); // it->second->getMostLeftChild();
+            }
+            else if (start > it->first) {
+                pStart = it->second;
+            }
+        }
+        else if (pNode->getIndexMap()->size() == 2) {
+
+            if (start < it->first) {
+                pStart = pNode->getMostLeftChild(); //it->second->getMostLeftChild();
+            }
+
+            else if (it->first < start && (++it)->first > start) {
+                pStart = (--it)->second;//it->second->getMostLeftChild();
+            }
+            else if ((++it)->first < start) {
+                pStart = it->second;
+            }
+        }
+    }
+    BpTreeNode* pEnd = root;
+
+    while (!pEnd->isLeaf()) {
+        BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pEnd); // 현재 노드를 인덱스 노드로 캐스팅
+        auto it = pNode->getIndexMap()->begin();
+        if (pNode->getIndexMap()->size() == 1) {
+
+            if (end < it->first) {
+                pEnd = pNode->getMostLeftChild(); // it->second->getMostLeftChild();
+            }
+            else if (end > it->first) {
+                pEnd = it->second;
+            }
+        }
+        else if (pNode->getIndexMap()->size() == 2) {
+
+            if (end < it->first) {
+                pEnd = pNode->getMostLeftChild(); //it->second->getMostLeftChild();
+            }
+
+            else if (it->first < end && (++it)->first > end) {
+                pEnd = (--it)->second;//it->second->getMostLeftChild();
+            }
+            else if ((++it)->first < end) {
+                pEnd = it->second;
+            }
+        }
+    }
+        BpTreeDataNode* tmp = dynamic_cast<BpTreeDataNode*>(pStart);
+        BpTreeDataNode* pSearchStart = dynamic_cast<BpTreeDataNode*>(pStart);
+        auto startData = pSearchStart->getDataMap()->begin();
+        BpTreeDataNode* pSearchEnd = dynamic_cast<BpTreeDataNode*>(pEnd);
+        auto endData = pSearchEnd->getDataMap()->begin();
+
+        while (pStart != nullptr) {
+            while (startData != pSearchStart->getDataMap()->end()) {
+                *fout << "PRINT RANGE: " << startData->second->getName() << "/" << startData->second->getCode()
+                    << "/" << startData->second->getAuthor() << "/" << startData->second->getYear() << "/"
+                    << startData->second->getLoanCount() << endl;
+                startData++;
+            }
+            
+            pStart = pSearchStart->getNext();
+
+
+
+
+
+
+
+    }
+
+    
+        return true;
+    
+}
+
+*/
+bool BpTree::searchRange(string start, string end) {
+    BpTreeNode* pStart = root;
+    /*
+    // start 문자열에 해당하는 데이터노드 탐색
+    while (!pStart->isLeaf()) {
+        BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pStart);
+        int i;
+        for (i = 0; i < pNode->getKeysCount(); ++i) {
+            if (start < pNode->getKey(i)) {
+                break;
+            }
+        }
+        pStart = pNode->getChild(i);
+    }
+
+    // end 문자열에 해당하는 데이터노드 탐색
+    BpTreeNode* pEnd = root;
+    while (!pEnd->isLeaf()) {
+        BpTreeIndexNode* pNode = dynamic_cast<BpTreeIndexNode*>(pEnd);
+        int i;
+        for (i = 0; i < pNode->getKeysCount(); ++i) {
+            if (end < pNode->getKey(i)) {
+                break;
+            }
+        }
+        pEnd = pNode->getChild(i);
+    }
+
+    // pStart부터 pEnd까지의 데이터 출력
+    while (pStart != nullptr) {
+        // 현재 노드의 데이터 출력
+        BpTreeDataNode* pDataNode = dynamic_cast<BpTreeDataNode*>(pStart);
+        for (int i = 0; i < pDataNode->getKeysCount(); ++i) {
+            string key = pDataNode->getKey(i);
+            if (key >= start && key <= end) {
+                // pDataNode에서 데이터를 출력하는 방법을 작성
+                // (이 부분은 실제 데이터를 출력하는 로직으로 대체되어야 합니다.)
+                cout << "Key: " << key << ", Value: " << pDataNode->getValue(i) << endl;
+            }
+        }
+
+        // 다음 데이터 노드로 이동
+        pStart = pDataNode->getNext();
+    }
+    */
     return true;
 }
+
 
 bool BpTree::printBook() {
     BpTreeNode* pCur = root;
@@ -320,6 +423,10 @@ bool BpTree::printBook() {
         pCur = dataNode->getNext();
     }
 
+    return true;
+}
+
+bool BpTree::Delete(LoanBookData* data) {
     return true;
 }
 
