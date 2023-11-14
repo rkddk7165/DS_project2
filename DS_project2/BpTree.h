@@ -19,18 +19,22 @@ private:
 	
 
 public:
+	//Constructor of BpTree class
 	BpTree(ofstream* fout, int order = 3) {
 		root = NULL;
 		this->order = order;
 		this->fout = fout;
 	}
-	~BpTree();
-	/* essential */
+	~BpTree() {};
+
+	//Member function declaration of BpTree class
 	bool		Insert(LoanBookData* newData);
+	bool		isInsertError(LoanBookData* newData);
 	bool		excessDataNode(BpTreeNode* pDataNode);
 	bool		excessIndexNode(BpTreeNode* pIndexNode);
 	void		splitDataNode(BpTreeNode* pDataNode);
 	void		splitIndexNode(BpTreeNode* pIndexNode);
+
 	BpTreeNode* getRoot() { return root; }
 	BpTreeNode* searchDataNode(string name);
 

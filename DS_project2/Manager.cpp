@@ -1,10 +1,8 @@
 #include "Manager.h"
 
-LoanBookData loanBookData;
 
 
-     
-
+//A function that reads a command from a command file and calls a function that performs the operation of that command.
 void Manager::run(const char* command)
 {
     
@@ -14,6 +12,7 @@ void Manager::run(const char* command)
 		flog << "File Open Error" << endl;
 		return;
 	}
+
     //open log.txt for writing output
     flog.open("log.txt");
 
@@ -30,49 +29,47 @@ void Manager::run(const char* command)
                 printSuccessCode("LOAD");
             }
             else {
-                flog << "failed" << endl;
+                printErrorCode(100);
             }
         }
 
         else if (cmd.substr(0, 3) == "ADD") {
             string addData = cmd.substr(4);
 
-            ADD(addData);
+            if (!ADD(addData)) {
+                printErrorCode(200);
+            }
 
         }
         
 
-        
+        //When reading the SEARCH_BP command
         else if (cmd.substr(0, 9) == "SEARCH_BP") {
             string args = cmd.substr(10);
             size_t spaceIndex = args.find(' ');
 
             if (spaceIndex != string::npos) {
-                // SEARCH_BP 인자가 두 개인 경우
+                // If there are two SEARCH_BP arguments
                 string start = args.substr(0, spaceIndex);
                 string end = args.substr(spaceIndex + 1);
 
-                if (SEARCH_BP_RANGE(start, end)) {
-                    printSuccessCode("SEARCH_BP_RANGE");
-                }
-                else {
-                    flog << "SEARCH_BP_RANGE failed" << endl;
-                }
+                SEARCH_BP_RANGE(start, end);
+                   
             }
             else {
-                // SEARCH_BP 인자가 한 개인 경우
+                // If SEARCH_BP has one argument
                 string bookName = args;
 
                 bool found = bptree->searchBook(bookName);
 
                 if (!found) {
-                    flog << "Book not found." << endl;
+                    printErrorCode(300);
                 }
             }
         }
         
         else if (cmd == "PRINT_BP") {
-            bptree->printBook();
+            PRINT_BP();
         }
 
         else {
@@ -89,14 +86,16 @@ void Manager::run(const char* command)
 
 bool Manager::LOAD()
 {
-    // Read data.txt and store datas in LoanBookData
+    // Read data.txt and store datas in LoanBookData instances and insert datas into BpTree
     ifstream inputFile("loan_book.txt");
     if (!inputFile.is_open()) {
-        printErrorCode(100);
+        printErrorCode(100); //LOAD Error code
         return false;
     }
 
     string line;
+
+    // Split a string based on tab (\t)
     while (getline(inputFile, line)) {
         istringstream iss(line);
         string tmp;
@@ -109,7 +108,8 @@ bool Manager::LOAD()
         getline(iss, author, '\t');
         getline(iss, year, '\t');
         getline(iss, loan_count, '\t');
-
+            
+            //
             LoanBookData* newBook = new LoanBookData;
             newBook->setBookData(name, stoi(code), author, stoi(year));
 
@@ -148,7 +148,7 @@ bool Manager::ADD(string addData)
 
     }
     else {
-        flog << "========ADD========" << endl << name << "/" << code << "/" << author << "/" << year << endl << "====================" << endl;
+        flog << "========ADD========" << endl << name << "/" << code << "/" << author << "/" << year << endl << "====================" << endl << endl;
 
         return true;
     }
@@ -170,34 +170,39 @@ bool Manager::SEARCH_BP_BOOK(string book)
     }
     else {
         printErrorCode(200);
+        return false;
     }
-    return false;
+    
 }
 
 bool Manager::SEARCH_BP_RANGE(string s, string e)
 {
     if (bptree) {
+        flog << "========SEARCH_BP========" << endl;
+
         if (bptree->searchRange(s, e)) {
+            flog << "=========================" << endl << endl;
             return true;
         }
         else {
-            printErrorCode(200);
+            printErrorCode(300);
         }
     }
     else {
-        printErrorCode(200);
+        printErrorCode(300);
     }
     return false;
 }
 
 bool Manager::PRINT_BP() {
     if (bptree) {
+        flog << "========PRINT_BP========" << endl;
         if (bptree->printBook()) {
-            printSuccessCode("PRINT_BP");
+            flog << "========================" << endl << endl;
             return true;
         }
         else {
-            printErrorCode(300);
+            printErrorCode(400);
         }
     }
     else {

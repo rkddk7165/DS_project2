@@ -1,6 +1,6 @@
+Sapiens	200	Brian	1950	0
 1984	100	George	1949	0
-To Kill a Mochingbrid	400	Harper Lee	1960	0
 Educated	300	Tara Westover	2018	0
-The Power of Now	600	Echhart Tolle	1997	0
-AAA	200	Amy	2000	0
-BBB	100	BRAIN	1999	2
+IT	400	Chris	2000	0
+Dune	500	Denis	1999	0
+The Road	200	Peter	1988	0

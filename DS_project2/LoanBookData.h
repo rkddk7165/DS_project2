@@ -5,6 +5,7 @@
 #include<string>
 
 using namespace std;
+
 //이 클래스는 객체 생성을 통해 하나의 책 데이터를 쪼개서 저장하는 클래스임
 class LoanBookData
 {

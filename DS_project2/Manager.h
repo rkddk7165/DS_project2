@@ -5,32 +5,29 @@
 class Manager
 {
 private:
+
+	//instances
 	char* cmd;
 	BpTree* bptree;
 	
 	ifstream fin;
 	ofstream flog;
 
-	//BpTree* bptree;
 public:
 	Manager(int bpOrder)	//constructor
 	{
 		bptree = new BpTree(&flog, bpOrder);
-		
-		
-
-		/* You must fill here */
 	}
 
 
 	~Manager()//destructor
 	{
-		/* You must fill here */
+		delete bptree;
 	}
 
 	
 
-
+	//Member function declaration of Manager class (command)
 	void run(const char* command);
 	bool LOAD();
 	bool ADD(string addData);

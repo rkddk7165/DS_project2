@@ -9,11 +9,17 @@ private:
     LoanBookHeapNode* root;
 
 public:
-    LoanBookHeap();
-    ~LoanBookHeap();
+    //constructor
+    LoanBookHeap() {
+        this->root = NULL;
+    };
 
+    //destructor
+    ~LoanBookHeap() {
 
+    }
 
+    //Member function declaration of LoanBookHeap class
     void setRoot(LoanBookHeapNode* pN) { this->root = pN; }
     LoanBookHeapNode* getRoot() { return root; }
 
