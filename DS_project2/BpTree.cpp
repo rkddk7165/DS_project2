@@ -73,9 +73,9 @@ bool BpTree::isInsertError(LoanBookData* newData) {
     }
 
     // Check if the code is NULL
-    if (newData->getCode() == NULL) {
-        return false;
-    }
+   // if (newData->getCode() == NULL) {
+   //     return false;
+    //}
 
     // Check if the author is empty
     if (newData->getAuthor().empty()) {
@@ -118,7 +118,7 @@ void BpTree::splitDataNode(BpTreeNode* pDataNode) {
     auto mid = dataNode->getDataMap()->begin();
 
     //Move the midpoint iterator mid to the middle of the data map. Operation to split a data node in half
-    advance(mid, dataNode->getDataMap()->size() / 2);
+    mid++;
 
 
     // Copy split data to new data node
@@ -196,8 +196,8 @@ void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
     newIndexNode->setMostLeftChild(mid->second);
 
     // Remove key and child pointers after the middle position from the original index node
-    indexNode->getIndexMap()->erase(mid, indexNode->getIndexMap()->end());
-
+    indexNode->getIndexMap()->erase(mid);
+    indexNode->getIndexMap()->erase(it);
 
     // Insert a new key into the parent node and connect the index to the pointer
     if (indexNode->getParent() == nullptr) {
@@ -218,7 +218,7 @@ void BpTree::splitIndexNode(BpTreeNode* pIndexNode) {
         BpTreeNode* parent = indexNode->getParent();
 
         // Insert new key into parent node
-        parent->insertIndexMap(mid->first, newIndexNode);
+        parent->insertIndexMap(midName, newIndexNode);
 
         // After inserting a new key, if the data of the parent node exceeds 2, split the parent node
         if (excessIndexNode(parent)) {

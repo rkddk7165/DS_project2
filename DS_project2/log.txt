@@ -6,30 +6,100 @@ Success
 1984/100/George/1949/0
 ==========================
 
+========SEARCH_BP========
+the road/200/Peter/1988/0
+==========================
+
 ========PRINT_BP========
 1984/100/George/1949/0
-Dune/500/Denis/1999/0
-Educated/300/Tara Westover/2018/0
-IT/400/Chris/2000/0
-Sapiens/200/Brian/1950/0
-The Road/200/Peter/1988/0
+abc/0/James/1950/0
+def/100/Kang/1988/2
+dune/500/Denis/1999/0
+educated/300/Tara Westover/2018/0
+ghi/200/Kim/1977/1
+it/400/Chris/2000/0
+pqr/500/Koo/1944/0
+jkl/300/Lee/1966/0
+mno/400/Park/1955/0
+sapiens/200/Brian/1950/0
+stu/600/Choi/1933/0
+the road/200/Peter/1988/0
+vwx/700/Cho/1922/0
 ========================
 
 ========ADD========
 Educated/300/Tara Westover/2018
 ====================
 
+========ADD========
+it/400/Chris/2000
+====================
+
 ========PRINT_BP========
 1984/100/George/1949/0
-Dune/500/Denis/1999/0
-Educated/300/Tara Westover/2018/1
-IT/400/Chris/2000/0
-Sapiens/200/Brian/1950/0
-The Road/200/Peter/1988/0
+Educated/300/Tara Westover/2018/0
+abc/0/James/1950/0
+def/100/Kang/1988/2
+dune/500/Denis/1999/0
+educated/300/Tara Westover/2018/0
+ghi/200/Kim/1977/1
+it/400/Chris/2000/1
+pqr/500/Koo/1944/0
+jkl/300/Lee/1966/0
+mno/400/Park/1955/0
+sapiens/200/Brian/1950/0
+stu/600/Choi/1933/0
+the road/200/Peter/1988/0
+vwx/700/Cho/1922/0
+========================
+
+========ADD========
+ooo/300/Oliver/2020
+====================
+
+========PRINT_BP========
+1984/100/George/1949/0
+Educated/300/Tara Westover/2018/0
+abc/0/James/1950/0
+def/100/Kang/1988/2
+dune/500/Denis/1999/0
+educated/300/Tara Westover/2018/0
+ghi/200/Kim/1977/1
+it/400/Chris/2000/1
+pqr/500/Koo/1944/0
+jkl/300/Lee/1966/0
+mno/400/Park/1955/0
+ooo/300/Oliver/2020/0
+sapiens/200/Brian/1950/0
+stu/600/Choi/1933/0
+the road/200/Peter/1988/0
+vwx/700/Cho/1922/0
 ========================
 
 ========SEARCH_BP========
-Dune/500/Denis/1999/0
-Educated/300/Tara Westover/2018/1
+abc/0/James/1950/0
+def/100/Kang/1988/2
+dune/500/Denis/1999/0
+educated/300/Tara Westover/2018/0
 =========================
+
+========SEARCH_BP========
+def/100/Kang/1988/2
+dune/500/Denis/1999/0
+educated/300/Tara Westover/2018/0
+ghi/200/Kim/1977/1
+it/400/Chris/2000/1
+pqr/500/Koo/1944/0
+jkl/300/Lee/1966/0
+mno/400/Park/1955/0
+ooo/300/Oliver/2020/0
+sapiens/200/Brian/1950/0
+stu/600/Choi/1933/0
+the road/200/Peter/1988/0
+vwx/700/Cho/1922/0
+=========================
+
+=========EXIT========
+Success
+=======================
 

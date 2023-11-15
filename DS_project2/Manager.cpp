@@ -46,7 +46,7 @@ void Manager::run(const char* command)
         //When reading the SEARCH_BP command
         else if (cmd.substr(0, 9) == "SEARCH_BP") {
             string args = cmd.substr(10);
-            size_t spaceIndex = args.find(' ');
+            size_t spaceIndex = args.find('\t');
 
             if (spaceIndex != string::npos) {
                 // If there are two SEARCH_BP arguments
@@ -70,6 +70,12 @@ void Manager::run(const char* command)
         
         else if (cmd == "PRINT_BP") {
             PRINT_BP();
+        }
+
+        else if (cmd == "EXIT")
+        {
+            printSuccessCode("EXIT");
+            break;
         }
 
         else {

@@ -27,6 +27,4 @@ public:
     bool printBookData(int bookCode);
 
     void buildSelectionTree();
-    SelectionTreeNode* findLeafNodeByCode(SelectionTreeNode* current, int code);
-    void InsertToHeap(int heapCode, LoanBookData* newData);
 };

@@ -73,67 +73,52 @@ void SelectionTree::buildSelectionTree() {
 
 bool SelectionTree::Insert(LoanBookData* newData) {
     
-    buildSelectionTree();
-    // 데이터의 코드를 기반으로 leaf 노드를 찾음
-    int code = newData->getCode();
-    SelectionTreeNode* leafNode = findLeafNodeByCode(root, code);
 
-    if (leafNode) {
-        // leaf 노드에 연결된 heap에 데이터 삽입
-        if (leafNode->getHeap()) {
-            leafNode->getHeap()->Insert(newData);
-            return true;
+    // 새로운 데이터를 삽입할 위치를 찾기 위해 중위 순회로 탐색
+    SelectionTreeNode* pCur = root;
+    SelectionTreeNode* parent = nullptr;
+
+    while (pCur) {
+        parent = pCur;
+        if (newData->getName() < pCur->getBookData()->getName()) {
+            pCur = pCur->getLeftChild();
         }
         else {
-            // leaf 노드에 연결된 heap이 없는 경우 에러 처리 또는 적절한 작업 수행
-            return false;
+            pCur = pCur->getRightChild();
         }
     }
-    else {
-        // leaf 노드를 찾지 못한 경우 에러 처리 또는 적절한 작업 수행
-        return false;
+
+    // 새로운 노드 생성
+    SelectionTreeNode* newNode = new SelectionTreeNode();
+    newNode->setBookData(newData);
+
+    // 부모와 연결
+    newNode->setParent(parent);
+
+    if (newData->getName() < parent->getBookData()->getName()) {
+        parent->setLeftChild(newNode);
     }
+    else {
+        parent->setRightChild(newNode);
+    }
+
+    // Min Winner Tree 조건을 만족하도록 조정
+    while (newNode->getParent() && newNode->getBookData()->getName() < newNode->getParent()->getBookData()->getName()) {
+        // 부모와의 값 비교를 통해 Min Winner Tree를 유지
+        LoanBookData* temp = newNode->getBookData();
+        newNode->setBookData(newNode->getParent()->getBookData());
+        newNode->getParent()->setBookData(temp);
+
+        newNode = newNode->getParent();
+    }
+    
+    newNode->setHeap(new LoanBookHeap());
+
+
+    return true;
 }
 
 
-    // 코드를 기반으로 leaf 노드를 찾는 재귀 함수
-    SelectionTreeNode* SelectionTree::findLeafNodeByCode(SelectionTreeNode* current, int code) {
-        if (!current) {
-            return nullptr;
-        }
-
-        if (!current->getLeftChild() && !current->getRightChild()) {
-            // leaf 노드인 경우
-            return current;
-        }
-
-        // 코드를 기반으로 왼쪽 또는 오른쪽 자식 노드로 이동
-        if (code == 000) {
-            return findLeafNodeByCode(current->getLeftChild(), code);
-        }
-        else {
-            return findLeafNodeByCode(current->getRightChild(), code);
-        }
-    }
-
-    void SelectionTree::InsertToHeap(int heapCode, LoanBookData* newData) {
-        SelectionTreeNode* leafNode = findLeafNodeByCode(root, heapCode);
-        if (leafNode) {
-            // leaf 노드에 연결된 heap에 데이터 삽입
-            if (leafNode->getHeap()) {
-                leafNode->getHeap()->Insert(newData);
-            }
-            else {
-                // leaf 노드에 연결된 heap이 없는 경우 새로운 heap을 생성하고 데이터 삽입
-                leafNode->setHeap(new LoanBookHeap());
-                leafNode->getHeap()->Insert(newData);
-            }
-        }
-        else {
-            // leaf 노드를 찾지 못한 경우 에러 처리 또는 적절한 작업 수행
-            // 여기에 적절한 에러 처리를 추가하십시오.
-        }
-    }
 
     
 
